@@ -3,9 +3,7 @@ package actions
 import (
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/buffalo/middleware"
-	"github.com/gobuffalo/buffalo/middleware/ssl"
 	"github.com/gobuffalo/envy"
-	"github.com/unrolled/secure"
 
 	"github.com/gobuffalo/authrecipe/models"
 
@@ -29,11 +27,6 @@ func App() *buffalo.App {
 			Env:         ENV,
 			SessionName: "_authrecipe_session",
 		})
-		// Automatically redirect to SSL
-		app.Use(ssl.ForceSSL(secure.Options{
-			SSLRedirect:     ENV == "production",
-			SSLProxyHeaders: map[string]string{"X-Forwarded-Proto": "https"},
-		}))
 
 		// Automatically save the session if the underlying
 		// Handler does not return an error.
@@ -53,6 +46,7 @@ func App() *buffalo.App {
 		//  c.Value("tx").(*pop.PopTransaction)
 		// Remove to disable this.
 		app.Use(middleware.PopTransaction(models.DB))
+		app.Use(SetCurrentUser)
 
 		// Setup and use translations:
 		var err error
@@ -62,6 +56,12 @@ func App() *buffalo.App {
 		app.Use(T.Middleware())
 
 		app.GET("/", HomeHandler)
+
+		app.GET("/users/new", UsersNew)
+		app.POST("/users", UsersCreate)
+		app.GET("/signin", AuthNew)
+		app.POST("/signin", AuthCreate)
+		app.DELETE("/signout", AuthDestroy)
 
 		app.ServeFiles("/assets", packr.NewBox("../public/assets"))
 	}

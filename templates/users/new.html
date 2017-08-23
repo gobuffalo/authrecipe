@@ -1,0 +1,7 @@
+<h1>Register</h1>
+
+<%= form_for(user, {action: usersPath()}) { %>
+<%= f.InputTag("Email") %>
+<%= f.InputTag("Password", {type: "password"}) %>
+<button class="btn btn-success">Register!</button>
+<% } %>
