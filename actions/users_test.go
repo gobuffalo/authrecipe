@@ -1,6 +1,8 @@
 package actions
 
-import "github.com/gobuffalo/authrecipe/models"
+import (
+	"github.com/gobuffalo/authrecipe/models"
+)
 
 func (as *ActionSuite) Test_Users_New() {
 	res := as.HTML("/users/new").Get()
@@ -13,8 +15,9 @@ func (as *ActionSuite) Test_Users_Create() {
 	as.Equal(0, count)
 
 	u := &models.User{
-		Email:    "mark@example.com",
-		Password: "password",
+		Email:                "mark@example.com",
+		Password:             "password",
+		PasswordConfirmation: "password",
 	}
 
 	res := as.HTML("/users").Post(u)

@@ -10,8 +10,9 @@ func (as *ActionSuite) Test_HomeHandler() {
 
 func (as *ActionSuite) Test_HomeHandler_LoggedIn() {
 	u := &models.User{
-		Email:    "mark@example.com",
-		Password: "password",
+		Email:                "mark@example.com",
+		Password:             "password",
+		PasswordConfirmation: "password",
 	}
 	verrs, err := u.Create(as.DB)
 	as.NoError(err)

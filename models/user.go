@@ -14,12 +14,13 @@ import (
 )
 
 type User struct {
-	ID           uuid.UUID `json:"id" db:"id"`
-	CreatedAt    time.Time `json:"created_at" db:"created_at"`
-	UpdatedAt    time.Time `json:"updated_at" db:"updated_at"`
-	Email        string    `json:"email" db:"email"`
-	PasswordHash string    `json:"-" db:"password_hash"`
-	Password     string    `json:"-" db:"-"`
+	ID                   uuid.UUID `json:"id" db:"id"`
+	CreatedAt            time.Time `json:"created_at" db:"created_at"`
+	UpdatedAt            time.Time `json:"updated_at" db:"updated_at"`
+	Email                string    `json:"email" db:"email"`
+	PasswordHash         string    `json:"-" db:"password_hash"`
+	Password             string    `json:"-" db:"-"`
+	PasswordConfirmation string    `json:"-" db:"-"`
 }
 
 // String is not required by pop and may be deleted
@@ -81,5 +82,6 @@ func (u *User) ValidateCreate(tx *pop.Connection) (*validate.Errors, error) {
 	var err error
 	return validate.Validate(
 		&validators.StringIsPresent{Field: u.Password, Name: "Password"},
+		&validators.StringsMatch{Name: "Password", Field: u.Password, Field2: u.PasswordConfirmation, Message: "Password does not match confirmation"},
 	), err
 }

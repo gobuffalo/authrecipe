@@ -8,8 +8,9 @@ func (ms *ModelSuite) Test_User_Create() {
 	ms.Equal(0, count)
 
 	u := &models.User{
-		Email:    "mark@example.com",
-		Password: "password",
+		Email:                "mark@example.com",
+		Password:             "password",
+		PasswordConfirmation: "password",
 	}
 	ms.Zero(u.PasswordHash)
 
@@ -48,8 +49,9 @@ func (ms *ModelSuite) Test_User_Create_UserExists() {
 	ms.Equal(0, count)
 
 	u := &models.User{
-		Email:    "mark@example.com",
-		Password: "password",
+		Email:                "mark@example.com",
+		Password:             "password",
+		PasswordConfirmation: "password",
 	}
 	ms.Zero(u.PasswordHash)
 

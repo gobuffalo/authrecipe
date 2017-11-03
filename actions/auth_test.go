@@ -5,13 +5,14 @@ import "github.com/gobuffalo/authrecipe/models"
 func (as *ActionSuite) Test_Auth_New() {
 	res := as.HTML("/signin").Get()
 	as.Equal(200, res.Code)
-	as.Contains(res.Body.String(), "Signin")
+	as.Contains(res.Body.String(), "Sign In")
 }
 
 func (as *ActionSuite) Test_Auth_Create() {
 	u := &models.User{
-		Email:    "mark@example.com",
-		Password: "password",
+		Email:                "mark@example.com",
+		Password:             "password",
+		PasswordConfirmation: "password",
 	}
 	verrs, err := u.Create(as.DB)
 	as.NoError(err)
@@ -34,8 +35,9 @@ func (as *ActionSuite) Test_Auth_Create_UnknownUser() {
 
 func (as *ActionSuite) Test_Auth_Create_BadPassword() {
 	u := &models.User{
-		Email:    "mark@example.com",
-		Password: "password",
+		Email:                "mark@example.com",
+		Password:             "password",
+		PasswordConfirmation: "password",
 	}
 	verrs, err := u.Create(as.DB)
 	as.NoError(err)
