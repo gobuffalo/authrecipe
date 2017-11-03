@@ -17,6 +17,29 @@ Ok, so you've edited the "database.yml" file and started postgres, now Buffalo c
 
 	$ buffalo db create -a
 
+## Install node modules
+Since Buffalo uses webpack for asset pipeline management, you need to install the required node modules before starting your  application:
+```
+$ npm install
+```
+
+If you don't have NodeJS installed on your machine you need it first.
+### Installing NodeJS on macOS
+- Install Homebrew if you don't have it (but you really *should*)
+```
+$ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+```
+- Then install NodeJS
+```
+$ brew install node
+```
+
+### Installing NodeJS on Ubuntu/Debian
+```
+$ curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+$ sudo apt-get install -y nodejs
+```
+
 
 ## Starting the Application
 
