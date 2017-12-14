@@ -17,6 +17,12 @@ Ok, so you've edited the "database.yml" file and started postgres, now Buffalo c
 
 	$ buffalo db create -a
 
+### Migrate Your Databases
+
+The database was created succefuly, but no table yet. Buffalo can do it for you as well: 
+
+	$ buffalo db migrate
+
 ## Install node modules
 Since Buffalo uses webpack for asset pipeline management, you need to install the required node modules before starting your  application:
 ```
