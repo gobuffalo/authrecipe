@@ -3,7 +3,7 @@ package actions
 import (
 	"github.com/gobuffalo/authrecipe/models"
 	"github.com/gobuffalo/buffalo"
-	"github.com/markbates/pop"
+	"github.com/gobuffalo/pop"
 	"github.com/pkg/errors"
 )
 
