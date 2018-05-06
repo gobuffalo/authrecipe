@@ -1,10 +1,13 @@
+<!DOCTYPE html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
-    <title>Buffalo - Authrecipe</title>
-    <link rel="stylesheet" href="/assets/application.css" type="text/css" media="all" />
+    <title>Buffalo - Coke</title>
+    <%= stylesheetTag("application.css") %>
     <meta name="csrf-param" content="authenticity_token" />
     <meta name="csrf-token" content="<%= authenticity_token %>" />
+    <link rel="icon" href="<%= assetPath("images/favicon.ico") %>">
   </head>
   <body>
 
@@ -13,6 +16,6 @@
       <%= yield %>
     </div>
 
-    <script src="/assets/application.js" type="text/javascript" charset="utf-8"></script>
+    <%= javascriptTag("application.js") %>
   </body>
 </html>
