@@ -13,32 +13,24 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type UserForm struct {
+	User
+	Password             string `json:"-" db:"-"`
+	PasswordConfirmation string `json:"-" db:"-"`
+}
+
 type User struct {
-	ID                   uuid.UUID `json:"id" db:"id"`
-	CreatedAt            time.Time `json:"created_at" db:"created_at"`
-	UpdatedAt            time.Time `json:"updated_at" db:"updated_at"`
-	Email                string    `json:"email" db:"email"`
-	PasswordHash         string    `json:"-" db:"password_hash"`
-	Password             string    `json:"-" db:"-"`
-	PasswordConfirmation string    `json:"-" db:"-"`
+	ID           uuid.UUID `json:"id" db:"id"`
+	CreatedAt    time.Time `json:"created_at" db:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at" db:"updated_at"`
+	Email        string    `json:"email" db:"email"`
+	PasswordHash string    `json:"-" db:"password_hash"`
 }
 
 // String is not required by pop and may be deleted
 func (u User) String() string {
 	ju, _ := json.Marshal(u)
 	return string(ju)
-}
-
-// Create wraps up the pattern of encrypting the password and
-// running validations. Useful when writing tests.
-func (u *User) Create(tx *pop.Connection) (*validate.Errors, error) {
-	u.Email = strings.ToLower(u.Email)
-	ph, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return validate.NewErrors(), errors.WithStack(err)
-	}
-	u.PasswordHash = string(ph)
-	return tx.ValidateAndCreate(u)
 }
 
 // Users is not required by pop and may be deleted
@@ -77,11 +69,28 @@ func (u *User) Validate(tx *pop.Connection) (*validate.Errors, error) {
 	), err
 }
 
-// ValidateCreate gets run every time you call "pop.ValidateAndCreate" method.
-func (u *User) ValidateCreate(tx *pop.Connection) (*validate.Errors, error) {
-	var err error
-	return validate.Validate(
+// Create wraps up the pattern of encrypting the password and
+// running validations. Useful when writing tests.
+func (u *UserForm) ValidateAndCreate(tx *pop.Connection) (*validate.Errors, error) {
+	verrs := validate.NewErrors()
+
+	u.Email = strings.ToLower(u.Email)
+	ph, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return verrs, errors.WithStack(err)
+	}
+	u.PasswordHash = string(ph)
+
+	verrs.Append(validate.Validate(
 		&validators.StringIsPresent{Field: u.Password, Name: "Password"},
 		&validators.StringsMatch{Name: "Password", Field: u.Password, Field2: u.PasswordConfirmation, Message: "Password does not match confirmation"},
-	), err
+	))
+	uv, err := u.User.Validate(tx)
+	verrs.Append(uv)
+
+	if err != nil || verrs.HasAny() {
+		return verrs, errors.WithStack(err)
+	}
+
+	return verrs, tx.Create(&u.User)
 }

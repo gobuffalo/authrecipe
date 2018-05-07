@@ -9,12 +9,15 @@ func (as *ActionSuite) Test_Auth_New() {
 }
 
 func (as *ActionSuite) Test_Auth_Create() {
-	u := &models.User{
-		Email:                "mark@example.com",
+	u := &models.UserForm{
+		User: models.User{
+			Email: "mark@example.com",
+		},
 		Password:             "password",
 		PasswordConfirmation: "password",
 	}
-	verrs, err := u.Create(as.DB)
+
+	verrs, err := u.ValidateAndCreate(as.DB)
 	as.NoError(err)
 	as.False(verrs.HasAny())
 
@@ -24,8 +27,10 @@ func (as *ActionSuite) Test_Auth_Create() {
 }
 
 func (as *ActionSuite) Test_Auth_Create_UnknownUser() {
-	u := &models.User{
-		Email:    "mark@example.com",
+	u := &models.UserForm{
+		User: models.User{
+			Email: "mark@example.com",
+		},
 		Password: "password",
 	}
 	res := as.HTML("/signin").Post(u)
@@ -34,12 +39,14 @@ func (as *ActionSuite) Test_Auth_Create_UnknownUser() {
 }
 
 func (as *ActionSuite) Test_Auth_Create_BadPassword() {
-	u := &models.User{
-		Email:                "mark@example.com",
+	u := &models.UserForm{
+		User: models.User{
+			Email: "mark@example.com",
+		},
 		Password:             "password",
 		PasswordConfirmation: "password",
 	}
-	verrs, err := u.Create(as.DB)
+	verrs, err := u.ValidateAndCreate(as.DB)
 	as.NoError(err)
 	as.False(verrs.HasAny())
 

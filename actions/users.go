@@ -15,24 +15,24 @@ func UsersNew(c buffalo.Context) error {
 
 // UsersCreate registers a new user with the application.
 func UsersCreate(c buffalo.Context) error {
-	u := &models.User{}
-	if err := c.Bind(u); err != nil {
+	form := &models.UserForm{User: models.User{}}
+	if err := c.Bind(form); err != nil {
 		return errors.WithStack(err)
 	}
 
 	tx := c.Value("tx").(*pop.Connection)
-	verrs, err := u.Create(tx)
+	verrs, err := form.ValidateAndCreate(tx)
 	if err != nil {
 		return errors.WithStack(err)
 	}
 
 	if verrs.HasAny() {
-		c.Set("user", u)
+		c.Set("user", form)
 		c.Set("errors", verrs)
-		return c.Render(200, r.HTML("users/new.html"))
+		return c.Render(422, r.HTML("users/new.html"))
 	}
 
-	c.Session().Set("current_user_id", u.ID)
+	c.Session().Set("current_user_id", form.ID)
 	c.Flash().Add("success", "Welcome to Buffalo!")
 
 	return c.Redirect(302, "/")

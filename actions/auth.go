@@ -20,19 +20,19 @@ func AuthNew(c buffalo.Context) error {
 
 // AuthCreate attempts to log the user in with an existing account.
 func AuthCreate(c buffalo.Context) error {
-	u := &models.User{}
-	if err := c.Bind(u); err != nil {
+	form := &models.UserForm{User: models.User{}}
+	if err := c.Bind(form); err != nil {
 		return errors.WithStack(err)
 	}
 
 	tx := c.Value("tx").(*pop.Connection)
 
 	// find a user with the email
-	err := tx.Where("email = ?", strings.ToLower(u.Email)).First(u)
+	err := tx.Where("email = ?", strings.ToLower(form.Email)).First(&form.User)
 
 	// helper function to handle bad attempts
 	bad := func() error {
-		c.Set("user", u)
+		c.Set("user", form)
 		verrs := validate.NewErrors()
 		verrs.Add("email", "invalid email/password")
 		c.Set("errors", verrs)
@@ -48,11 +48,11 @@ func AuthCreate(c buffalo.Context) error {
 	}
 
 	// confirm that the given password matches the hashed password from the db
-	err = bcrypt.CompareHashAndPassword([]byte(u.PasswordHash), []byte(u.Password))
+	err = bcrypt.CompareHashAndPassword([]byte(form.PasswordHash), []byte(form.Password))
 	if err != nil {
 		return bad()
 	}
-	c.Session().Set("current_user_id", u.ID)
+	c.Session().Set("current_user_id", form.ID)
 	c.Flash().Add("success", "Welcome Back to Buffalo!")
 
 	return c.Redirect(302, "/")
