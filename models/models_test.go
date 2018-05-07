@@ -4,17 +4,8 @@ import (
 	"testing"
 
 	"github.com/gobuffalo/packr"
-	"github.com/gobuffalo/plush"
 	"github.com/gobuffalo/suite"
-	"golang.org/x/crypto/bcrypt"
 )
-
-func init() {
-	plush.Helpers.Add("hash", func(s string) (string, error) {
-		ph, err := bcrypt.GenerateFromPassword([]byte(s), bcrypt.DefaultCost)
-		return string(ph), err
-	})
-}
 
 type ModelSuite struct {
 	*suite.Model

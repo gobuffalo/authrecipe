@@ -119,8 +119,8 @@
     ".",
     "fix"
   ]
-  revision = "f8d299e126c7b834e0b1841c421de6c0ec6b3491"
-  version = "v2.1.0"
+  revision = "e2e0134eb87394466461f262c7cb7027b9e332e0"
+  version = "v2.1.1"
 
 [[projects]]
   name = "github.com/gobuffalo/tags"
@@ -365,7 +365,7 @@
     "reflectfind",
     "reflectsource"
   ]
-  revision = "47fa5b7ceee66c60ac3a281416089035bf526a3c"
+  revision = "9e1955d9fb6e1ee2345ba1f5e71669263e719e27"
 
 [[projects]]
   branch = "master"
