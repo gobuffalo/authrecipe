@@ -38,9 +38,3 @@ func (a *ActionSuite) Login() *models.User {
 	a.NoError(a.Session.Save())
 	return u
 }
-func init() {
-	plush.Helpers.Add("hash", func(s string) (string, error) {
-		ph, err := bcrypt.GenerateFromPassword([]byte(s), bcrypt.DefaultCost)
-		return string(ph), err
-	})
-}
