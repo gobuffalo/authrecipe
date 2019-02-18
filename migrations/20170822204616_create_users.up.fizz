@@ -1,7 +1,7 @@
-create_table("users", func(t) {
+create_table("users") {
 	t.Column("id", "uuid", {"primary": true})
 	t.Column("email", "string", {})
 	t.Column("password_hash", "string", {})
-})
+}
 
 add_index("users", "email", {"unique": true})
